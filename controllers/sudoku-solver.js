@@ -80,7 +80,30 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
+    const matrix = puzzleString.match(/.{9}/g); //array with 9 rows
+    const rows = matrix.map(row => row.split(""));
+    if (this.solveHandler(puzzleString,rows)){
+      return rows.map(l => l.join("")).join("");
+    } else {
+      return false;
+    }
+  }
 
+  solveHandler(puzzleString,rows) {
+    let nextPosition = this.findPositionToFill(puzzleString);
+    if (nextPosition < 0) return true;
+    let solutions = this.findPossibleSolutions(puzzleString,nextPosition);
+    let row = parseInt(nextPosition / 9);
+    let col = (nextPosition % 9);
+    for (let solution of solutions){
+      rows[row][col] = String(solution);
+      let temp = rows.map(l => l.join("")).join("");
+      if (this.solveHandler(temp,rows)){
+        return true;
+      }
+    }
+    rows[row][col] = ".";
+    return false
   }
 }
 
